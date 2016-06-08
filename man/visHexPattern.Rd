@@ -42,6 +42,9 @@ found in \url{http://html-color-codes.info/color-names}}
 
 \item{customized.color}{the customized color for pattern visualisation}
 
+\item{alterntive.color}{the alterntive color used to indicate the
+hexagon layout}
+
 \item{zeropattern.color}{the color for zero horizental line}
 
 \item{legend}{logical to indicate whether to add the legend}

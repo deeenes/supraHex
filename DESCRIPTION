@@ -45,6 +45,7 @@ Collate:
     visHeatmapAdv.r
     visTreeBootstrap.r
     visDmatHeatmap.r
+    visHexBarplot.r
 License: GPL-2
 biocViews: Bioinformatics, Clustering, Visualization, GeneExpression
 

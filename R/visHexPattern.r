@@ -9,6 +9,7 @@
 #' @param margin margins as units of length 4 or 1
 #' @param colormap short name for the predifined colormap, and "customized" for custom input (see the next 'customized.color'). The predifined colormap can be one of "jet" (jet colormap), "bwr" (blue-white-red colormap), "gbr" (green-black-red colormap), "wyr" (white-yellow-red colormap), "br" (black-red colormap), "yr" (yellow-red colormap), "wb" (white-black colormap), and "rainbow" (rainbow colormap, that is, red-yellow-green-cyan-blue-magenta). Alternatively, any hyphen-separated HTML color names, e.g. "blue-black-yellow", "royalblue-white-sandybrown", "darkgreen-white-darkviolet". A list of standard color names can be found in \url{http://html-color-codes.info/color-names}
 #' @param customized.color the customized color for pattern visualisation
+#' @param alterntive.color the alterntive color used to indicate the hexagon layout
 #' @param zeropattern.color the color for zero horizental line
 #' @param legend logical to indicate whether to add the legend
 #' @param legend.cex a numerical value giving the amount by which legend text should be magnified relative to the default (i.e., 1)
@@ -129,6 +130,7 @@ visHexPattern <- function (sObj, plotType=c("lines","bars","radars"), pattern=NU
         ## for legend
         if(length(myPatternColor)!=1 & legend){
             key.loc <- c(max(dat$x), max(dat$y)-sqrt(0.75))
+            key.loc <- c(mean(dat$x), mean(dat$y)-sqrt(0.75))
             if(is.null(legend.label)){
 				tmpData <- pattern
 				tmpData[tmpData!=0] <- 0
@@ -208,6 +210,7 @@ visHexPattern <- function (sObj, plotType=c("lines","bars","radars"), pattern=NU
                 
                 ## draw bar
                 rect(xLeft, yBottom, xRight, yTop, col=myPatternColor, border="transparent")
+                text(xRight, yBottom, labels=colnames(pattern), srt=90, pos=2, cex=0.8)
             }
             
         }else if(plotType == "radars"){
