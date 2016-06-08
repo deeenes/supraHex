@@ -58,7 +58,7 @@
 #' visHexPattern(sMap, plotType="radars", pattern=pattern, customized.color=rep(c("red","green"),each=3))
 #' visHexPattern(sMap, plotType="radars", pattern=pattern, customized.color=rep(c("red","green"),each=3), legend.label=c("S","T"))
 
-visHexPattern <- function (sObj, plotType=c("lines","bars","radars"), pattern=NULL, height=7, margin=rep(0.1,4), colormap=c("customized","bwr","jet","gbr","wyr","br","yr","rainbow","wb"), customized.color="red", zeropattern.color="gray", legend=T, legend.cex=0.8, legend.label=NULL, newpage=T)
+visHexPattern <- function (sObj, plotType=c("lines","bars","radars"), pattern=NULL, height=7, margin=rep(0.1,4), colormap=c("customized","bwr","jet","gbr","wyr","br","yr","rainbow","wb"), customized.color="red", alterntive.color=c("transparent","gray"), zeropattern.color="gray", legend=T, legend.cex=0.8, legend.label=NULL, newpage=T)
 {
     
     plotType <- match.arg(plotType)
@@ -102,9 +102,9 @@ visHexPattern <- function (sObj, plotType=c("lines","bars","radars"), pattern=NU
         stepCentroid[1] <- 1
         stepCentroid[2:nHex] <- unlist(sapply(2:r, function(x) (c( (1+6*x*(x-1)/2-6*(x-1)+1) : (1+6*x*(x-1)/2) )>=1)*x ))
         if(r%%2){
-            tmpColor <- c("transparent", "#555555")
+            tmpColor <- alterntive.color
         }else{
-            tmpColor <- c("#555555", "transparent")    
+            tmpColor <- rev(alterntive.color)
         }
         myBorderColor <- tmpColor[stepCentroid%%2 + 1]
     }
