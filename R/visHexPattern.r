@@ -210,7 +210,6 @@ visHexPattern <- function (sObj, plotType=c("lines","bars","radars"), pattern=NU
                 
                 ## draw bar
                 rect(xLeft, yBottom, xRight, yTop, col=myPatternColor, border="transparent")
-                text(xRight, yBottom, labels=colnames(pattern), srt=90, pos=2, cex=0.8)
             }
             
         }else if(plotType == "radars"){
