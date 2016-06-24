@@ -261,9 +261,9 @@ visTreeBSclust <- function(tree_bs, bootstrap.cutoff=80, max.fraction=1, min.siz
                     cex = nodelabels.arg.default$cex, 
                     font = nodelabels.arg.default$font,
                     col = nodelabels.arg.default$col,
-                    bg = visColormap(colormap=nodelabels.arg.default$bg)(101)[1 + as.numeric(tree_bs$node.label)]
+                    bg = visColormap(colormap=nodelabels.arg.default$bg)(101)[1 + as.numeric(tree_bs$node.label[nodelabels.arg.default$node-Ntip])]
                    )
-   
+   		
         ########################################################################
     }
 	
