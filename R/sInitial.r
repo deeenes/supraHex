@@ -11,6 +11,7 @@
 #'  \item{\code{nHex}: the total number of hexagons/rectanges in the grid}
 #'  \item{\code{xdim}: x-dimension of the grid}
 #'  \item{\code{ydim}: y-dimension of the grid}
+#'  \item{\code{r}: the hypothetical radius of the grid}
 #'  \item{\code{lattice}: the grid lattice}
 #'  \item{\code{shape}: the grid shape}
 #'  \item{\code{coord}: a matrix of nHex x 2, with each row corresponding to the coordinates of a hexagon/rectangle in the 2D map grid}
@@ -127,6 +128,7 @@ sInitial <- function(data, sTopol, init=c("linear","uniform","sample"))
     sInit <- list(  nHex = nHex, 
                    xdim = xdim, 
                    ydim = ydim,
+                   r = sTopol$r,
                    lattice = sTopol$lattice,
                    shape = sTopol$shape,
                    coord = sTopol$coord,
