@@ -84,7 +84,7 @@ sInitial <- function(data, sTopol, init=c("linear","uniform","sample"))
 
         ##################################  
         ## calculate 2 largest eigenvalues and their corresponding eigenvectors
-        data.center <- scale(data, center=T, scale=F)
+        data.center <- scale(data, center=TRUE, scale=FALSE)
         s<-svd(data.center)
         # d: a vector containing the singular values, i.e., the square roots of the non-zero eigenvalues of data %*% t(data)
         # u: a matrix whose columns contain the left singular vectors, i.e., eigenvectors of data %*% t(data)
@@ -115,7 +115,7 @@ sInitial <- function(data, sTopol, init=c("linear","uniform","sample"))
         Coords <- (Coords-0.5)*2
         
         tmpMean <- matrix(apply(data, 2, mean), nrow=1, ncol=ncol(data))        
-        codebook <- matrix(rep(tmpMean, nHex), nrow=nHex, ncol=length(tmpMean), byrow = T)
+        codebook <- matrix(rep(tmpMean, nHex), nrow=nHex, ncol=length(tmpMean), byrow=TRUE)
         for(i in 1:nHex){
             codebook[i,] <- codebook[i,] + Coords[i,] %*% t(V)
         }

@@ -4,7 +4,7 @@
 \alias{sTrainBatch}
 \title{Function to implement training via batch algorithm}
 \usage{
-sTrainBatch(sMap, data, sTrain, verbose = T)
+sTrainBatch(sMap, data, sTrain, verbose = TRUE)
 }
 \arguments{
 \item{sMap}{an object of class "sMap" or "sInit"}

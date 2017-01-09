@@ -62,7 +62,7 @@
 #' # 7) training at "finetune" stage
 #' sM_finetune <- sTrainBatch(sMap=sM_rough, data=data, sTrain=sT_rough)
 
-sTrainBatch <- function(sMap, data, sTrain, verbose=T)
+sTrainBatch <- function(sMap, data, sTrain, verbose=TRUE)
 {
 
     if (class(sMap) != "sMap" & class(sMap) != "sInit"){
@@ -118,10 +118,10 @@ sTrainBatch <- function(sMap, data, sTrain, verbose=T)
     
     ########################################################
     ## A function to indicate the running progress
-    progress_indicate <- function(i, B, step, flag=F){
+    progress_indicate <- function(i, B, step, flag=FALSE){
         if(i %% ceiling(B/step) == 0 | i==B | i==1){
             if(flag & verbose){
-                message(sprintf("\t%d out of %d (%s)", i, B, as.character(Sys.time())), appendLF=T)
+                message(sprintf("\t%d out of %d (%s)", i, B, as.character(Sys.time())), appendLF=TRUE)
             }
         }
     }
@@ -129,7 +129,7 @@ sTrainBatch <- function(sMap, data, sTrain, verbose=T)
     
     for (t in 1:length(radius)){
         
-        progress_indicate(i=t, B=length(radius), length(radius), flag=T)
+        progress_indicate(i=t, B=length(radius), length(radius), flag=TRUE)
         
         if(1){
             response <- sBMH(M, D, which_bmh="best")
@@ -168,7 +168,7 @@ sTrainBatch <- function(sMap, data, sTrain, verbose=T)
         A <- Hi %*% !is.na(D)
         
         if(verbose){
-            message(sprintf("\tupdated (%s)", as.character(Sys.time())), appendLF=T)
+            message(sprintf("\tupdated (%s)", as.character(Sys.time())), appendLF=TRUE)
         }
         
         # only update units for which the "activation" is nonzero

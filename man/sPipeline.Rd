@@ -11,7 +11,7 @@ lattice = c("hexa", "rect"), shape = c("suprahex", "sheet", "triangle",
 init = c("linear", "uniform", "sample"), algorithm = c("batch",
 "sequential"), alphaType = c("invert", "linear", "power"),
 neighKernel = c("gaussian", "bubble", "cutgaussian", "ep", "gamma"),
-finetuneSustain = F, verbose = T)
+finetuneSustain = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{data}{a data frame or matrix of input data}

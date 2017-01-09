@@ -110,7 +110,7 @@ sTopology <- function (data=NULL, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("he
                 ## initialize xdim/ydim ratio using principal components of the input space; the ratio is the square root of ratio of two largest eigenvalues
                 
                 ## calculate two largest eigenvalues and their corresponding eigenvectors
-                data.center <- scale(data, center=T, scale=F)
+                data.center <- scale(data, center=TRUE, scale=FALSE)
                 s <- svd(data.center)
                 # d: a vector containing the singular values, i.e., the square roots of the non-zero eigenvalues of data %*% t(data)
                 # u: a matrix whose columns contain the left singular vectors, i.e., eigenvectors of data %*% t(data)

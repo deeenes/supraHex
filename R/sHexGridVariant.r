@@ -21,6 +21,9 @@
 #' @seealso \code{\link{sHexGrid}}
 #' @include sHexGridVariant.r
 #' @examples
+#' # For "supraHex" shape itself
+#' sHex <- sHexGridVariant(r=6, shape="suprahex")
+#' 
 #' \dontrun{
 #' library(ggplot2)
 #' 
@@ -82,7 +85,7 @@
 #' 
 #' # combined visuals
 #' library(gridExtra)
-#' grid.arrange(grobs=list(gp_suprahex,gp_ring,gp_diamond,gp_trefoil,gp_butterfly,gp_hourglass,gp_ladder,gp_bridge,gp_triangle), layout_matrix=rbind(c(1,1,2,2,3),c(1,1,2,2,3),c(4,4,5,5,6),c(4,4,5,5,6),c(7,7,8,8,9)), nrow=5, ncol=5)
+#' grid.arrange(grobs=list(gp_suprahex, gp_ring, gp_diamond, gp_trefoil, gp_butterfly, gp_hourglass, gp_ladder, gp_bridge, gp_triangle), layout_matrix=rbind(c(1,1,2,2,3),c(1,1,2,2,3),c(4,4,5,5,6),c(4,4,5,5,6),c(7,7,8,8,9)), nrow=5, ncol=5)
 #' }
 
 sHexGridVariant <- function (r=NULL, nHex=NULL, shape=c("suprahex", "triangle", "diamond", "hourglass", "trefoil", "ladder", "butterfly", "ring", "bridge"))

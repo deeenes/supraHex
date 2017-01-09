@@ -4,7 +4,7 @@
 \alias{sTrainSeq}
 \title{Function to implement training via sequential algorithm}
 \usage{
-sTrainSeq(sMap, data, sTrain, verbose = T)
+sTrainSeq(sMap, data, sTrain, verbose = TRUE)
 }
 \arguments{
 \item{sMap}{an object of class "sMap" or "sInit"}
