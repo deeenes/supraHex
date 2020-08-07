@@ -7,7 +7,7 @@
 sDmatCluster(
 sMap,
 which_neigh = 1,
-distMeasure = c("median", "mean", "min", "max"),
+distMeasure = c("mean", "median", "min", "max"),
 constraint = TRUE,
 clusterLinkage = c("average", "complete", "single", "bmh"),
 reindexSeed = c("hclust", "svd", "none")

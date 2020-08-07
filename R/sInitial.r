@@ -132,6 +132,7 @@ sInitial <- function(data, sTopol, init=c("linear","uniform","sample"))
                    lattice = sTopol$lattice,
                    shape = sTopol$shape,
                    coord = sTopol$coord,
+                   ig =  sTopol$ig,
                    init = init,
                    codebook = codebook,
                    call = match.call(),

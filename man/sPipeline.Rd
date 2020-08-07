@@ -5,7 +5,7 @@
 \title{Function to setup the pipeline for completing ab initio training given the input data}
 \usage{
 sPipeline(
-data = NULL,
+data,
 xdim = NULL,
 ydim = NULL,
 nHex = NULL,
@@ -85,7 +85,7 @@ an object of class "sMap", a list with following components:
 \item{\code{shape}: the grid shape}
 \item{\code{coord}: a matrix of nHex x 2, with rows corresponding to
 the coordinates of all hexagons/rectangles in the 2D map grid}
-\item{\code{ig}: the igraph object (currently NULL)}
+\item{\code{ig}: the igraph object}
 \item{\code{polygon}: a tibble of 7 columns
 ('x','y','index','node','edge','stepCentroid','angleCentroid') storing
 polygon location per hexagon}
@@ -98,6 +98,11 @@ space}
 hexagon/rectangle contains the number of input data vectors being hit
 wherein}
 \item{\code{mqe}: the mean quantization error for the "best" BMH}
+\item{\code{data}: an input data matrix (with rownames and colnames
+added if NULL)}
+\item{\code{response}: a tibble of 3 columns ('did' for rownames of
+input data matrix, 'index', and 'qerr' (quantization error; the
+distance to the "best" BMH))}
 \item{\code{call}: the call that produced this result}
 }
 }
@@ -113,10 +118,10 @@ The pipeline sequentially consists of:
 \item{ii) \code{\link{sInitial}} used to initialise the codebook matrix
 given the pre-defined topology and the input data (by default using
 "uniform" initialisation method);}
-\item{iii) \code{\link{sTrainology}} and \code{\link{sTrainSeq}} used
-to get the grid map trained at both "rough" and "finetune" stages. If
-instructed, sustain the "finetune" training until the mean quantization
-error does get worse;}
+\item{iii) \code{\link{sTrainology}} and \code{\link{sTrainSeq}} or
+\code{\link{sTrainBatch}} used to get the grid map trained at both
+"rough" and "finetune" stages. If instructed, sustain the "finetune"
+training until the mean quantization error does get worse;}
 \item{iv) \code{\link{sBMH}} used to identify the best-matching
 hexagons/rectangles (BMH) for the input data, and these response data
 are appended to the resulting object of "sMap" class.}
@@ -149,6 +154,12 @@ sMap <- sPipeline(data=data, shape="trefoil",
 algorithm=c("batch","sequential")[2])
 visHexMulComp(sMap, colormap="jet", ncolors=20, zlim=c(-1,1),
 gp=grid::gpar(cex=0.8))
+
+
+library(ggraph)
+ggraph(sMap$ig, layout=sMap$coord) + geom_edge_link() +
+geom_node_circle(aes(r=0.4),fill='white') + coord_fixed(ratio=1) +
+geom_node_text(aes(label=name), size=2)
 }
 }
 \references{

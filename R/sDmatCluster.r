@@ -36,7 +36,7 @@
 #' # 4) visualise clusters/bases partitioned from the sMap
 #' visDmatCluster(sMap,sBase)
 
-sDmatCluster <- function(sMap, which_neigh=1, distMeasure=c("median","mean","min","max"), constraint=TRUE, clusterLinkage=c("average","complete","single","bmh"), reindexSeed=c("hclust","svd","none"))
+sDmatCluster <- function(sMap, which_neigh=1, distMeasure=c("mean","median","min","max"), constraint=TRUE, clusterLinkage=c("average","complete","single","bmh"), reindexSeed=c("hclust","svd","none"))
 {
     
     distMeasure <- match.arg(distMeasure)
@@ -172,16 +172,27 @@ sDmatCluster <- function(sMap, which_neigh=1, distMeasure=c("median","mean","min
     ## whether reindexing seed
     if(reindexSeed=="hclust"){
         ## reordering via hierarchical clustering
-        distance <- as.dist(sDistance(M[seed,], metric="euclidean"))
-        cluster <- hclust(distance, method="complete")
+        distance <- stats::as.dist(sDistance(M[seed,], metric="euclidean"))
+        cluster <- stats::hclust(distance, method=c("ward.D","average")[2])
         ordering <- cluster$order
-    
+    	
+    	## ?reorder.dendrogram
+    	if(1){
+    		# reorders the dendrogram by increasing weights, but maintaining the constraints on the dendrogram
+    		# reverse twice to ensure the lower seeds tend to be lower
+    		dd <- stats::as.dendrogram(cluster)
+    		dd.reorder <- stats::reorder(dd, wts=rev(seq(length(seed))))
+    		ordering <- stats::as.hclust(dd.reorder)$order %>% rev()
+    	}
+    	
         ## reorder seed
         seed <- seed[ordering]
         ## reorder base
         old_index <- (1:length(seed))
         new_index <- old_index[ordering]
         base <- sapply(base, function(x) which(new_index==x))
+        
+        #tibble(old=base) %>% inner_join(tibble(new=1:length(seed),old=ordering), by='old') %>% pull(new) -> base
         
     }else if(reindexSeed=="svd"){
         ## reordering via SVD

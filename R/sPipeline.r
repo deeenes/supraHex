@@ -25,20 +25,22 @@
 #'  \item{\code{lattice}: the grid lattice}
 #'  \item{\code{shape}: the grid shape}
 #'  \item{\code{coord}: a matrix of nHex x 2, with rows corresponding to the coordinates of all hexagons/rectangles in the 2D map grid}
-#'  \item{\code{ig}: the igraph object (currently NULL)}
+#'  \item{\code{ig}: the igraph object}
 #'  \item{\code{polygon}: a tibble of 7 columns ('x','y','index','node','edge','stepCentroid','angleCentroid') storing polygon location per hexagon}
 #'  \item{\code{init}: an initialisation method}
 #'  \item{\code{neighKernel}: the training neighborhood kernel}
 #'  \item{\code{codebook}: a codebook matrix of nHex x ncol(data), with rows corresponding to prototype vectors in input high-dimensional space}
 #'  \item{\code{hits}: a vector of nHex, each element meaning that a hexagon/rectangle contains the number of input data vectors being hit wherein}
 #'  \item{\code{mqe}: the mean quantization error for the "best" BMH}
+#'  \item{\code{data}: an input data matrix (with rownames and colnames added if NULL)}
+#'  \item{\code{response}: a tibble of 3 columns ('did' for rownames of input data matrix, 'index', and 'qerr' (quantization error; the distance to the "best" BMH))}
 #'  \item{\code{call}: the call that produced this result}
 #' }
 #' @note The pipeline sequentially consists of: 
 #' \itemize{
 #' \item{i) \code{\link{sTopology}} used to define the topology of a grid (with "suprahex" shape by default ) according to the input data;}
 #' \item{ii) \code{\link{sInitial}} used to initialise the codebook matrix given the pre-defined topology and the input data (by default using "uniform" initialisation method);}
-#' \item{iii) \code{\link{sTrainology}} and \code{\link{sTrainSeq}} used to get the grid map trained at both "rough" and "finetune" stages. If instructed, sustain the "finetune" training until the mean quantization error does get worse;}
+#' \item{iii) \code{\link{sTrainology}} and \code{\link{sTrainSeq}} or \code{\link{sTrainBatch}} used to get the grid map trained at both "rough" and "finetune" stages. If instructed, sustain the "finetune" training until the mean quantization error does get worse;}
 #' \item{iv) \code{\link{sBMH}} used to identify the best-matching hexagons/rectangles (BMH) for the input data, and these response data are appended to the resulting object of "sMap" class.}
 #' }
 #' @export
@@ -52,7 +54,7 @@
 #' @importFrom tibble as_tibble tibble
 #' @importFrom tidyr nest separate_rows unnest
 #' @importFrom dplyr arrange bind_cols distinct filter inner_join mutate pull select transmute 
-#' @importFrom stringr str_c
+#' @importFrom stringr str_c str_replace_all
 #' @importFrom purrr map
 #' @importFrom magrittr %>%
 #' @importFrom igraph as_data_frame graph_from_data_frame
@@ -85,9 +87,13 @@
 #' # 4) get trained using by default setup but using the shape "butterfly"
 #' sMap <- sPipeline(data=data, shape="trefoil", algorithm=c("batch","sequential")[2])
 #' visHexMulComp(sMap, colormap="jet", ncolors=20, zlim=c(-1,1), gp=grid::gpar(cex=0.8))
+#' 
+#' 
+#' library(ggraph)
+#' ggraph(sMap$ig, layout=sMap$coord) + geom_edge_link() + geom_node_circle(aes(r=0.4),fill='white') + coord_fixed(ratio=1) + geom_node_text(aes(label=name), size=2)
 #' }
 
-sPipeline <- function(data=NULL, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("hexa","rect"), shape=c("suprahex", "sheet", "triangle", "diamond", "hourglass", "trefoil", "ladder", "butterfly", "ring", "bridge"), scaling=5, init=c("linear","uniform","sample"), algorithm=c("batch","sequential"), alphaType=c("invert","linear","power"), neighKernel=c("gaussian","bubble","cutgaussian","ep","gamma"), finetuneSustain=FALSE, verbose=TRUE)
+sPipeline <- function(data, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("hexa","rect"), shape=c("suprahex", "sheet", "triangle", "diamond", "hourglass", "trefoil", "ladder", "butterfly", "ring", "bridge"), scaling=5, init=c("linear","uniform","sample"), algorithm=c("batch","sequential"), alphaType=c("invert","linear","power"), neighKernel=c("gaussian","bubble","cutgaussian","ep","gamma"), finetuneSustain=FALSE, verbose=TRUE)
 {
 
     startT <- Sys.time()
@@ -102,6 +108,13 @@ sPipeline <- function(data=NULL, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("hex
     algorithm <- match.arg(algorithm)
     alphaType <- match.arg(alphaType)
     neighKernel <- match.arg(neighKernel)
+    
+    if(is.null(rownames(data))){
+        rownames(data) <- seq(1,nrow(data))
+    }
+    if(is.null(colnames(data))){
+        colnames(data) <- seq(1,ncol(data))
+    }
     
     ## define the topology of a map grid
     if (verbose){
@@ -196,6 +209,7 @@ sPipeline <- function(data=NULL, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("hex
         message(sprintf("Next, identify the best-matching hexagon/rectangle for the input data (%s)...", as.character(now)), appendLF=TRUE)
     }
     response <- sBMH(sMap=sM_final, data=data, which_bmh="best")
+    df_response <- tibble::tibble(did=rownames(data), index=as.vector(response$bmh), qerr=as.vector(response$qerr))
     
     ##################################################################
     if (verbose){
@@ -208,9 +222,9 @@ sPipeline <- function(data=NULL, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("hex
     
     ##################
     ## for df_polygons
-    df_polygon <- sHexPolygon(sM_final, area.size=1)
+    df_polygon <- sHexPolygon(sM_final, area.size=1) %>% tibble::as_tibble()
     ##################
-        
+    
     sMap <- list(  nHex = sM_final$nHex, 
                    xdim = sM_final$xdim, 
                    ydim = sM_final$ydim,
@@ -218,13 +232,15 @@ sPipeline <- function(data=NULL, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("hex
                    lattice = sM_final$lattice,
                    shape = sM_final$shape,
                    coord = sM_final$coord,
-                   ig = NULL,
+                   ig = sM_final$ig,
                    polygon = df_polygon,
                    init = sM_final$init,
                    neighKernel = sM_final$neighKernel,
                    codebook = sM_final$codebook,
                    hits = hits,
                    mqe = response$mqe,
+                   data = data,
+                   response = df_response,
                    call = match.call(),
                    method = "suprahex")
                    
