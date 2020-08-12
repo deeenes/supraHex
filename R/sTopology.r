@@ -268,8 +268,11 @@ sTopology <- function (data=NULL, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("he
 	tmp <- ttmp
 	d <- data.frame(from=nodenames[tmp[,1]], to=nodenames[tmp[,2]])
 	## convert to ig
+	d$from <- stringr::str_replace_all(d$from, 'u', '')
+	d$to <- stringr::str_replace_all(d$to, 'u', '')
+	nodes$name <- stringr::str_replace_all(nodes$name, 'u', '')
 	ig <- igraph::graph_from_data_frame(d=d, directed=FALSE, vertices=nodes)
-	V(ig)$name <- stringr::str_replace_all(V(ig)$name, 'u', '')
+	#V(ig)$name <- stringr::str_replace_all(V(ig)$name, 'u', '')
 	###################################################
 	
     sTopol <- list(nHex = nHex, 

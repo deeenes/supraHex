@@ -14,6 +14,8 @@
 #' \itemize{
 #'  \item{\code{seeds}: the vector to store cluster seeds, i.e., a list of local minima (in 2D output space) of distance matrix (in input space). They are represented by the indexes of hexagons/rectangles}
 #'  \item{\code{bases}: the vector with the length of nHex to store the cluster memberships/bases, where nHex is the total number of hexagons/rectanges in the grid}
+#'  \item{\code{ig}: an igraph object storing neighbor relations between bases, with node attributes 'name' (base), 'index', 'xcoord' and 'ycoord' (based on seeds)}
+#'  \item{\code{hclust}: a hclust object storing tree-like relations between bases (based on seed model vectors)}
 #'  \item{\code{call}: the call that produced this result}
 #' }
 #' @note The first item in the return "seeds" is the first cluster, whose memberships are those in the return "bases" that equals 1. The same relationship is held for the second item, and so on
@@ -182,7 +184,8 @@ sDmatCluster <- function(sMap, which_neigh=1, distMeasure=c("mean","median","min
     		# reverse twice to ensure the lower seeds tend to be lower
     		dd <- stats::as.dendrogram(cluster)
     		dd.reorder <- stats::reorder(dd, wts=rev(seq(length(seed))))
-    		ordering <- stats::as.hclust(dd.reorder)$order %>% rev()
+    		cluster.reorder <- stats::as.hclust(dd.reorder)
+    		ordering <- cluster.reorder$order %>% rev()
     	}
     	
         ## reorder seed
@@ -237,11 +240,25 @@ sDmatCluster <- function(sMap, which_neigh=1, distMeasure=c("mean","median","min
 		
     }
     
+    ###########################################################
+    # phylo
+	distance <- stats::as.dist(sDistance(M[seed,], metric="euclidean"))
+	cluster <- stats::hclust(distance, method=c("ward.D","average")[2])
+	# reorders the dendrogram by increasing weights, but maintaining the constraints on the dendrogram
+	# reverse twice to ensure the lower seeds tend to be lower
+	dd <- stats::as.dendrogram(cluster)
+	dd.reorder <- stats::reorder(dd, wts=rev(seq(length(seed))))
+	cluster.reorder <- stats::as.hclust(dd.reorder)
+	#ordering <- cluster.reorder$order %>% rev()
+	#phylo <- ape::as.phylo(cluster.reorder)
+	#xGT(phylo,layout=c("rectangular","fan")[1])
+    
 	###########################################################
     
     sBase <- list(seeds = seed, 
                   bases = base, 
                   ig = ig_base,
+                  hclust = cluster.reorder,
                   call = match.call(),
                   method = "suprahex")
                 

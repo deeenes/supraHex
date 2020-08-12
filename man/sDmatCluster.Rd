@@ -51,6 +51,11 @@ They are represented by the indexes of hexagons/rectangles}
 \item{\code{bases}: the vector with the length of nHex to store the
 cluster memberships/bases, where nHex is the total number of
 hexagons/rectanges in the grid}
+\item{\code{ig}: an igraph object storing neighbor relations between
+bases, with node attributes 'name' (base), 'index', 'xcoord' and
+'ycoord' (based on seeds)}
+\item{\code{hclust}: a hclust object storing tree-like relations
+between bases (based on seed model vectors)}
 \item{\code{call}: the call that produced this result}
 }
 }
