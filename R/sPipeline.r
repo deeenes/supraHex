@@ -10,6 +10,7 @@
 #' @param shape the grid shape, either "suprahex" for a supra-hexagonal grid or "sheet" for a hexagonal/rectangle sheet. Also supported are suprahex's variants (including "triangle" for the triangle-shaped variant, "diamond" for the diamond-shaped variant, "hourglass" for the hourglass-shaped variant, "trefoil" for the trefoil-shaped variant, "ladder" for the ladder-shaped variant, "butterfly" for the butterfly-shaped variant, "ring" for the ring-shaped variant, and "bridge" for the bridge-shaped variant)
 #' @param scaling the scaling factor. Only used when automatically estimating the grid dimension from input data matrix. By default, it is 5 (big map). Other suggested values: 1 for small map, and 3 for median map 
 #' @param init an initialisation method. It can be one of "uniform", "sample" and "linear" initialisation methods
+#' @param seed an integer specifying the seed
 #' @param algorithm the training algorithm. It can be one of "sequential" and "batch" algorithm. By default, it uses 'batch' algorithm purely because of its fast computations (probably also without the compromise of accuracy). However, it is highly recommended not to use 'batch' algorithm if the input data contain lots of zeros; it is because matrix multiplication used in the 'batch' algorithm can be problematic in this context. If much computation resource is at hand, it is alwasy safe to use the 'sequential' algorithm  
 #' @param alphaType the alpha type. It can be one of "invert", "linear" and "power" alpha types
 #' @param neighKernel the training neighborhood kernel. It can be one of "gaussian", "bubble", "cutgaussian", "ep" and "gamma" kernels
@@ -93,7 +94,7 @@
 #' ggraph(sMap$ig, layout=sMap$coord) + geom_edge_link() + geom_node_circle(aes(r=0.4),fill='white') + coord_fixed(ratio=1) + geom_node_text(aes(label=name), size=2)
 #' }
 
-sPipeline <- function(data, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("hexa","rect"), shape=c("suprahex", "sheet", "triangle", "diamond", "hourglass", "trefoil", "ladder", "butterfly", "ring", "bridge"), scaling=5, init=c("linear","uniform","sample"), algorithm=c("batch","sequential"), alphaType=c("invert","linear","power"), neighKernel=c("gaussian","bubble","cutgaussian","ep","gamma"), finetuneSustain=FALSE, verbose=TRUE)
+sPipeline <- function(data, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("hexa","rect"), shape=c("suprahex", "sheet", "triangle", "diamond", "hourglass", "trefoil", "ladder", "butterfly", "ring", "bridge"), scaling=5, init=c("linear","uniform","sample"), seed=825, algorithm=c("batch","sequential"), alphaType=c("invert","linear","power"), neighKernel=c("gaussian","bubble","cutgaussian","ep","gamma"), finetuneSustain=FALSE, verbose=TRUE)
 {
 
     startT <- Sys.time()
@@ -127,7 +128,7 @@ sPipeline <- function(data, xdim=NULL, ydim=NULL, nHex=NULL, lattice=c("hexa","r
     if (verbose){
         message(sprintf("Second, initialise the codebook matrix (%d X %d) using '%s' initialisation, given a topology and input data (%s)...", sTopol$nHex, ncol(data), init, as.character(now)), appendLF=TRUE)
     }
-    sI <- sInitial(data=data, sTopol=sTopol, init=init)
+    sI <- sInitial(data=data, sTopol=sTopol, init=init, seed=seed)
     
     ## get training at the rough stage
     if (verbose){

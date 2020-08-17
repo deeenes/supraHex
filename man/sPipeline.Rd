@@ -15,6 +15,7 @@ shape = c("suprahex", "sheet", "triangle", "diamond", "hourglass",
 "ladder", "butterfly", "ring", "bridge"),
 scaling = 5,
 init = c("linear", "uniform", "sample"),
+seed = 825,
 algorithm = c("batch", "sequential"),
 alphaType = c("invert", "linear", "power"),
 neighKernel = c("gaussian", "bubble", "cutgaussian", "ep", "gamma"),
@@ -50,6 +51,8 @@ map}
 
 \item{init}{an initialisation method. It can be one of "uniform",
 "sample" and "linear" initialisation methods}
+
+\item{seed}{an integer specifying the seed}
 
 \item{algorithm}{the training algorithm. It can be one of "sequential"
 and "batch" algorithm. By default, it uses 'batch' algorithm purely
