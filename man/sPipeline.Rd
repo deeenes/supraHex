@@ -72,7 +72,7 @@ and "power" alpha types}
 \item{finetuneSustain}{logical to indicate whether sustain the
 "finetune" training. If true, it will repeat the "finetune" stage until
 the mean quantization error does get worse. By default, it sets to
-true}
+FALSE}
 
 \item{verbose}{logical to indicate whether the messages will be
 displayed in the screen. By default, it sets to false for no display}
