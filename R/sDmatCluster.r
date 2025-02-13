@@ -227,8 +227,8 @@ sDmatCluster <- function(sMap, which_neigh=1, distMeasure=c("mean","median","min
 		df_base <- tibble::tibble(index=seq(sMap$nHex), base=base, seed=vec_seed) %>% dplyr::bind_cols(tibble::as_tibble(sMap$coord))
 		
 		## df_edge for sMap$ig
-		df_edge <- sMap$ig %>% igraph::as_data_frame(what='edge') %>% tibble::as_tibble()
-		
+		df_edge <- sMap$ig %>% igraph::as_data_frame(what='edges') %>% tibble::as_tibble()
+
 		## df_edge_base
 		df_edge %>% dplyr::inner_join(df_base %>% dplyr::transmute(from=as.character(index), from_base=base), by='from') %>% dplyr::inner_join(df_base %>% dplyr::transmute(to=as.character(index), to_base=base), by='to') %>% dplyr::filter(from_base!=to_base) %>% dplyr::transmute(from_s=ifelse(from_base<to_base, from_base, to_base), to_l=ifelse(from_base<to_base, to_base, from_base)) %>% dplyr::distinct() -> df_edge_base
 		
